@@ -11,7 +11,7 @@ PAYLOAD payloads[] = {
 	{ payloadDrawErrors, 10000 },
 	{ payloadChangeText, 40000 },
 	{ payloadScaryBus, 28000 },
-    { payloadScreenGlitches, 15000 },
+        { payloadScreenGlitches, 15000 },
 	{ payloadScreenmelting, 29000 },
 	{ payloadPIP, 30000 },
 	{ payloadPuzzle, 15000 },
