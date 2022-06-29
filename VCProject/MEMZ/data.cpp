@@ -39,6 +39,8 @@ const char *sites[] = {
 	"http://play.clubpenguin.com",
 	"http://pcoptimizerpro.com",
 	"http://softonic.com",
+	"VRchat",///VRShit sucks
+	"Discord".
 	"calc",
 	"notepad",
 	"cmd",
@@ -83,6 +85,7 @@ const char *msgs[] = {
 	"Well, hello there. I don't believe we've been properly introduced. I'm Bonzi!",
 	"'This is everything I want in my computer'\r\n - danooct1 2016",
 	"'Uh, Club Penguin. Time to get banned!'\r\n - danooct1 2016",
+	"VRChat sucks\r\n - ur mom",
 };
 
 const size_t nMsgs = sizeof(msgs) / sizeof(void *);
