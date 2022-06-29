@@ -40,7 +40,7 @@ const char *sites[] = {
 	"http://pcoptimizerpro.com",
 	"http://softonic.com",
 	"VRchat",///VRShit sucks
-	"Discord".
+	"Discord",
 	"calc",
 	"notepad",
 	"cmd",
