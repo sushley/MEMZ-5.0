@@ -59,5 +59,7 @@ int payloadPuzzle(PAYLOADFUNC);
 int payloadKeyboard(PAYLOADFUNC);
 int payloadPIP(PAYLOADFUNC);
 int payloadDrawErrors(PAYLOADFUNC);
-
+int payloadScreenmelting(PAYLOADFUNC);
+int payloadScreenGlitches(PAYLOADFUNC);
+int payloadScaryBus(PAYLOADFUNC);
 extern int scrw, scrh;
