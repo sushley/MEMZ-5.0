@@ -27,6 +27,10 @@ Credits and thanks
 
 Dobby233Liu and Leurak
 
+https://github.com/Leurak
+
+https://github.com/Dobby233Liu
+
 https://github.com/Dobby233Liu/VineMEMZ/blob/master
 
 JLee79
@@ -48,3 +52,11 @@ http://www.rohitab.com/discuss/topic/23191-screen-melter/
 TheMaynMike
  
  https://github.com/TheMaynMike/ScreenGlitches
+ 
+ https://github.com/TheMaynMike
+ 
+WobbyChip
+
+https://github.com/WobbyChip/Assembly
+
+https://github.com/WobbyChip
